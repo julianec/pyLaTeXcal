@@ -63,10 +63,10 @@ click.intRange() does range validation so the month is always between 1 and 12 a
 @click.option(
 	"--month", default=1, type=click.IntRange(1, 12), help="Specify the Month as a value from 1 - 12."
 )
-@click.option(
-	"output", default="-", type=click.File("w")
+@click.option( # TODO validate if file exists, ask for permission
+	"--output", default="-", type=click.File("w"), help="Writes output file"
 )
-def cli(year, month):
+def cli(year, month, output):
 	# create a monthly overview for Month in year 
 	myCal = MonthlyOverview(month, year)
 	# open the template file
