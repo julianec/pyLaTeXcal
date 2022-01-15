@@ -16,8 +16,8 @@ latex_jinja_env = jinja2.Environment(
 	loader = jinja2.FileSystemLoader(os.path.abspath('.'))
 )
 
-""" Class for creating LaTeX output for the calendar template. Expects Month [1-12] and year [YYYY] """
 class MonthlyOverview:
+	""" Class for creating LaTeX output for the calendar template. Expects Month [1-12] and year [YYYY] """
 	def __init__(self, month, year):
 		self.month_no = month
 		self.year = year
@@ -25,9 +25,9 @@ class MonthlyOverview:
 		self.my_calendar = cal.Calendar()
 		self.month_name = cal.month_name[self.month_no] # January is at index 1! 0 = empty string
 
-	""" Method to return a "LaTeX string for blank days at the start of the month.
-	Add up to six '\BlankDay' to blankdays to pass to jinja """
 	def getBlankDayString(self):
+		""" Method to return a "LaTeX string for blank days at the start of the month.
+		Add up to six '\BlankDay' to blankdays to pass to jinja """
 		# create an iterator for the days of a given year and month as numbers 
 		# where days not belonging to the given month are 0.
 		month = self.my_calendar.itermonthdays(self.year, self.month_no)
@@ -40,8 +40,8 @@ class MonthlyOverview:
 				break
 		return blankdays
 		 
-	""" Method to return a LaTeX string for the days of the month. """
 	def getDayString(self): 
+		""" Method to return a LaTeX string for the days of the month. """
 		# create an iterator for the days of a given year and month as numbers 
 		# where days not belonging to the given month are 0.
 		month = self.my_calendar.itermonthdays(self.year, self.month_no)
