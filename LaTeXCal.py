@@ -63,13 +63,17 @@ click.intRange() does range validation so the month is always between 1 and 12 a
 @click.option(
 	"--month", default=1, type=click.IntRange(1, 12), help="Specify the Month as a value from 1 - 12."
 )
+@click.option(
+	"output", default="-", type=click.File("w")
+)
 def cli(year, month):
 	# create a monthly overview for Month in year 
 	myCal = MonthlyOverview(month, year)
 	# open the template file
 	template = latex_jinja_env.get_template('calendar.tex.jinja2')
 	# create the LaTeX output from template and myCal
-	print(template.render(month=myCal.month_name, year=myCal.year, blankdays=myCal.getBlankDayString(), days=myCal.getDayString()))
+	output.write(template.render(month=myCal.month_name, year=myCal.year, blankdays=myCal.getBlankDayString(), days=myCal.getDayString()))
+	output.flush()
 
 # execute function if called directly via python3 and not imported. 
 if __name__ == "__main__":
