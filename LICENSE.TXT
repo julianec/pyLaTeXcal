@@ -1,6 +1,8 @@
 The calendar.sty (Evan Sultanik https://www.sultanik.com/) and original calendar.tex template (Vel vel@latextemplates.com) files were downloaded from:
 https://www.latextemplates.com/template/monthly-calendar 
-The template is CC BY-NC-SA 3.0 CC BY-NC-SA 3.0
+The template is CC BY-NC-SA 3.0
+
+The rest of the code is under the following license:
 
 Copyright 2022 julianec (https://github.com/julianec/pyLaTeXcal)
 
