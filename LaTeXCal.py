@@ -15,6 +15,7 @@ latex_jinja_env = jinja2.Environment(
 	autoescape = False,
 	loader = jinja2.FileSystemLoader(os.path.abspath('.'))
 )
+import click # we want to build a command line interface
 
 class MonthlyOverview:
 	""" Class for creating LaTeX output for the calendar template. Expects Month [1-12] and year [YYYY] """
@@ -51,11 +52,25 @@ class MonthlyOverview:
 				days = days +'\day{}{\\vspace{2.0cm}} % day '+ str(day) + '\n'
 		return days
 
-# create a monthly overview for January 2022
-myCal = MonthlyOverview(1, 2022)
-# open the template file
-template = latex_jinja_env.get_template('calendar.tex.jinja2')
-# create the LaTeX output from template and myCal
-print(template.render(month=myCal.month_name, year=myCal.year, blankdays=myCal.getBlankDayString(), days=myCal.getDayString()))
-# ToDo: command line options with click, validate input data
-# year, month, output-filename
+""" 
+Chain of decorations that all affect def cli in the end. 
+click.intRange() does range validation so the month is always between 1 and 12 and the year is always an integer starting from year 0 as the calendar package allows.
+"""
+@click.command()
+@click.option(
+	"--year", default=2022, type=click.IntRange(0), help="Specify the year in YYYY."
+)
+@click.option(
+	"--month", default=1, type=click.IntRange(1, 12), help="Specify the Month as a value from 1 - 12."
+)
+def cli(year, month):
+	# create a monthly overview for Month in year 
+	myCal = MonthlyOverview(month, year)
+	# open the template file
+	template = latex_jinja_env.get_template('calendar.tex.jinja2')
+	# create the LaTeX output from template and myCal
+	print(template.render(month=myCal.month_name, year=myCal.year, blankdays=myCal.getBlankDayString(), days=myCal.getDayString()))
+
+# execute function if called directly via python3 and not imported. 
+if __name__ == "__main__":
+	cli()
