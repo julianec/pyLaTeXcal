@@ -2,6 +2,7 @@ import jinja2
 import os
 from jinja2 import Template
 import calendar as cal
+from datetime import date
 latex_jinja_env = jinja2.Environment(
 	block_start_string = '\BLOCK{',
 	block_end_string = '}',
@@ -52,28 +53,35 @@ class MonthlyOverview:
 				days = days +'\day{}{\\vspace{2.0cm}} % day '+ str(day) + '\n'
 		return days
 
+# save current date to use as default options
+current_date = date.today()
+
 """ 
 Chain of decorations that all affect def cli in the end. 
 click.intRange() does range validation so the month is always between 1 and 12 and the year is always an integer starting from year 0 as the calendar package allows.
 """
 @click.command()
 @click.option(
-	"--year", default=2022, type=click.IntRange(0), help="Specify the year in YYYY."
+	"--year", default=current_date.year, type=click.IntRange(0), help="Specify the year in YYYY. Defaults to current year."
 )
 @click.option(
-	"--month", default=1, type=click.IntRange(1, 12), help="Specify the Month as a value from 1 - 12."
+	"--month", default=current_date.month, type=click.IntRange(1, 12), help="Specify the Month as a value from 1 - 12. Defaults to current Month."
 )
 @click.argument( # TODO validate if file exists, ask for permission
-	"output", default="-", type=click.File("w")
+	"filename", default="-", type=click.File("w")
 )
-def cli(year, month, output):
+def cli(year, month, filename):
+	"""
+	Create LaTeX calendar and write it to FILENAME.
+	If no file name is given, the default is stout. 
+	"""
 	# create a monthly overview for Month in year 
 	myCal = MonthlyOverview(month, year)
 	# open the template file
 	template = latex_jinja_env.get_template('calendar.tex.jinja2')
 	# create the LaTeX output from template and myCal
-	output.write(template.render(month=myCal.month_name, year=myCal.year, blankdays=myCal.getBlankDayString(), days=myCal.getDayString()))
-	output.flush()
+	filename.write(template.render(month=myCal.month_name, year=myCal.year, blankdays=myCal.getBlankDayString(), days=myCal.getDayString()))
+	filename.flush()
 
 # execute function if called directly via python3 and not imported. 
 if __name__ == "__main__":
